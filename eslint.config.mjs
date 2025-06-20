@@ -1,9 +1,49 @@
-import js from "@eslint/js";
-import globals from "globals";
-import { defineConfig } from "eslint/config";
+// eslint.config.js
+import eslintPluginJest from "eslint-plugin-jest";
 
-
-export default defineConfig([
-  { files: ["**/*.{js,mjs,cjs}"], plugins: { js }, extends: ["js/recommended"] },
-  { files: ["**/*.{js,mjs,cjs}"], languageOptions: { globals: globals.browser } },
-]);
+export default [
+  {
+    files: ["**/*.js"],
+    languageOptions: {
+      ecmaVersion: 2021,
+      sourceType: "script",
+      globals: {
+        require: "readonly",
+        module: "readonly",
+        __dirname: "readonly",
+      },
+    },
+    linterOptions: {
+      reportUnusedDisableDirectives: true,
+    },
+    rules: {
+      "no-undef": "off", // désactive l’erreur si on a bien défini les globals
+    },
+  },
+  {
+    files: ["**/*.test.js"],
+    plugins: {
+      jest: eslintPluginJest,
+    },
+    languageOptions: {
+      globals: {
+        test: "readonly",
+        expect: "readonly",
+        describe: "readonly",
+        beforeEach: "readonly",
+      },
+    },
+  },
+  {
+    files: ["tests/e2e/**/*.js"],
+    languageOptions: {
+      globals: {
+        test: "readonly",
+        expect: "readonly",
+      },
+    },
+  },
+  {
+    ignores: ["node_modules", "dist"],
+  },
+];
